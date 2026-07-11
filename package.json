@@ -1,5 +1,5 @@
 {
-	"name": "Aperture",
+	"name": "Vectra",
 	"version": "1.0.0",
 	"main": "index.js",
 	"license": "MIT",
@@ -10,7 +10,8 @@
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
-		"clean": "rm -rf dist/*",
+		"clean": "rm -rf dist/* && rm -rf lib/*",
+		"commit": "tsc -p tsconfig.dev.json",
 		"dev": "python3 -m http.server 3000"
 	}
 }
