@@ -130,7 +130,7 @@ which serves the current directory with `serve` (if installed).
 
 ```
 Vectra/
-├── dist/               # Compiled output (JavaScript + .d.ts)
+├── dist/               # Transpilled output (JavaScript + .d.ts)
 ├── src/               # Source code (TypeScript)
 │   ├── Vector2.ts
 │   ├── Rect.ts
