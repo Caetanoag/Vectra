@@ -27,7 +27,14 @@ export class Vector2 {
 	public toString(): string {
 		return `Vector2(${this.x.toFixed(2)}, ${this.y.toFixed(2)})`;
 	}
-
+	/**
+	 * Returns the angle in radians from this vector to another vector.
+	 * @param v
+	 * @returns
+	 */
+	public getAngle(v: Vector2): number {
+		return Math.atan2(v.y - this.y, v.x - this.x);
+	}
 	/**
 	 * Adds another vector to this one.
 	 * @param v - The vector to add.
