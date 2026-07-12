@@ -21,10 +21,7 @@ function update() {
 	inputManager.update();
 
 	const mousePos = inputManager.getMousePosition();
-	const angle = Math.atan2(
-		mousePos.y - transform.position.y,
-		mousePos.x - transform.position.x,
-	);
+	const angle = rect.position.getAngle(mousePos);
 	transform.rotation = angle;
 
 	renderer.setTransform(transform);

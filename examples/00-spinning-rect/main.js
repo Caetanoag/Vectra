@@ -1,4 +1,4 @@
-import { CanvasRenderer, Color, InputManager, Rect, Transform, Vector2, } from "../../lib/index.js";
+import { CanvasRenderer, Color, InputManager, Rect, Transform, Vector2, } from "https://cdn.jsdelivr.net/gh/reinhackVancheat/Vectra/lib/index.js";
 const canvas = document.getElementById("canvas");
 const renderer = new CanvasRenderer(canvas);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -10,7 +10,7 @@ function update() {
     renderer.clear();
     inputManager.update();
     const mousePos = inputManager.getMousePosition();
-    const angle = Math.atan2(mousePos.y - transform.position.y, mousePos.x - transform.position.x);
+    const angle = rect.position.getAngle(mousePos);
     transform.rotation = angle;
     renderer.setTransform(transform);
     renderer.fillRect(rect, rectColor);
