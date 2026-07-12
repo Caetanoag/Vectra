@@ -1,6 +1,8 @@
-import { CanvasRenderer } from "../dist/CanvasRenderer.js";
-import { Color } from "../dist/Color.js";
-import { Rect } from "../dist/Rect.js";
+import {
+	CanvasRenderer,
+	Color,
+	Rect,
+} from "https://cdn.jsdelivr.net/gh/reinhackVancheat/Vectra/lib/index.js";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const renderer = new CanvasRenderer(canvas);
