@@ -1,11 +1,25 @@
 import type { Color } from "./Color.js";
+import type { Matrix3 } from "./Matrix3.js";
 import type { Rect } from "./Rect.js";
+import type { Transform } from "./Transform.js";
 import type { Vector2 } from "./Vector2.js";
-export class CanvasRenderer {
-	constructor(public canvas: HTMLCanvasElement) {}
 
-	get context(): CanvasRenderingContext2D {
-		return this.canvas.getContext("2d") as CanvasRenderingContext2D;
+interface TextOptions {
+	fontFamily?: string; // default 'sans-serif'
+	fontSize?: number; // default 16
+	fontStyle?: "normal" | "italic" | "oblique"; // default 'normal'
+	fontWeight?: string; // default 'normal' (ou 'bold', '100', '900')
+	textAlign?: CanvasTextAlign; // 'left' | 'center' | 'right' | 'start' | 'end'
+	textBaseline?: CanvasTextBaseline; // 'top' | 'middle' | 'bottom' | 'alphabetic'
+	maxWidth?: number;
+}
+export class CanvasRenderer {
+	private readonly ctx;
+
+	constructor(public canvas: HTMLCanvasElement) {
+		const ctx = canvas.getContext("2d");
+		if (!ctx) throw new Error("Canvas 2D context not available.");
+		this.ctx = ctx;
 	}
 	get width(): number {
 		return this.canvas.width;
@@ -13,30 +27,24 @@ export class CanvasRenderer {
 	get height(): number {
 		return this.canvas.height;
 	}
+	get context(): CanvasRenderingContext2D {
+		return this.ctx;
+	}
 	public setSize(width: number, height: number): void {
 		this.canvas.width = width;
 		this.canvas.height = height;
 	}
-	public clear(color?: Color, rect?: Rect): void {
+	public clear(rect?: Rect): void {
 		if (rect) {
-			if (color) {
-				this.fillRect(rect, color);
-			} else {
-				this.context.clearRect(
-					rect.left,
-					rect.top,
-					rect.getWidth(),
-					rect.getHeight(),
-				);
-			}
+			this.context.clearRect(
+				rect.left,
+				rect.top,
+				rect.getWidth(),
+				rect.getHeight(),
+			);
 			return;
 		}
-		if (color) {
-			this.context.fillStyle = color.hex;
-			this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-		} else {
-			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		}
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
 	public fillRect(rect: Rect, color: Color): void {
@@ -53,7 +61,7 @@ export class CanvasRenderer {
 	public strokeRect(rect: Rect, color: Color, lineWidth?: number): void {
 		this.context.save();
 		this.context.strokeStyle = color.hex;
-		this.context.lineWidth = lineWidth ? lineWidth : 2;
+		this.context.lineWidth = lineWidth ?? 2;
 		this.context.strokeRect(
 			rect.left,
 			rect.top,
@@ -63,6 +71,9 @@ export class CanvasRenderer {
 		this.context.restore();
 	}
 	private createCircle(center: Vector2, radius: number): void {
+		if (radius <= 0 || !Number.isFinite(radius)) {
+			throw new Error("Radius must be a positive finite number.");
+		}
 		this.context.beginPath();
 		this.context.arc(center.x, center.y, radius, 0, Math.PI * 2);
 	}
@@ -80,7 +91,7 @@ export class CanvasRenderer {
 		lineWidth?: number,
 	): void {
 		this.context.save();
-		this.context.lineWidth = lineWidth ? lineWidth : 2;
+		this.context.lineWidth = lineWidth ?? 2;
 		this.context.strokeStyle = color.hex;
 		this.createCircle(center, radius);
 		this.context.stroke();
@@ -96,6 +107,11 @@ export class CanvasRenderer {
 	private createPolygon(points: Vector2[]) {
 		if (!points || points.length < 3) {
 			throw new Error("Polygon must have at least 3 points.");
+		}
+		for (const p of points) {
+			if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) {
+				throw new Error("All polygon points must have finite coordinates.");
+			}
 		}
 		this.context.beginPath();
 		const first = points[0];
@@ -124,13 +140,129 @@ export class CanvasRenderer {
 		color: Color,
 		lineWidth?: number,
 	): void {
+		if (!Number.isFinite(from.x) || !Number.isFinite(from.y)) {
+			throw new Error("From must have finite coordinates.");
+		}
+		if (!Number.isFinite(to.x) || !Number.isFinite(to.y)) {
+			throw new Error("To must have finite coordinates.");
+		}
 		this.context.save();
 		this.context.strokeStyle = color.hex;
-		this.context.lineWidth = lineWidth ? lineWidth : 2;
+		this.context.lineWidth = lineWidth ?? 2;
 		this.context.beginPath();
 		this.context.moveTo(from.x, from.y);
 		this.context.lineTo(to.x, to.y);
 		this.context.stroke();
 		this.context.restore();
+	}
+
+	public translate(dx: number, dy: number): void {
+		if (!Number.isFinite(dx)) {
+			throw new Error(`Dx must have finite value: ${dx}`);
+		}
+		if (!Number.isFinite(dy)) {
+			throw new Error(`Dy must have finite value: ${dy}`);
+		}
+		this.context.translate(dx, dy);
+	}
+	public rotate(angle: number): void {
+		if (!Number.isFinite(angle)) {
+			throw new Error("Angle must have finite value");
+		}
+		this.context.rotate(angle);
+	}
+	public scale(sx: number, sy: number): void {
+		if (!Number.isFinite(sx)) {
+			throw new Error(`sx must have finite value: ${sx}`);
+		}
+		if (!Number.isFinite(sy)) {
+			throw new Error(`sy must have finite value: ${sy}`);
+		}
+		this.context.scale(sx, sy);
+	}
+	public save(): void {
+		this.context.save();
+	}
+	public restore(): void {
+		this.context.restore();
+	}
+	public resetTransform(): void {
+		this.context.setTransform(1, 0, 0, 1, 0, 0);
+	}
+	public applyMatrix(matrix: Matrix3): void {
+		const [a, b, c, d, e, f] = matrix.toCanvasTransform();
+		this.context.transform(a, b, c, d, e, f);
+	}
+	public applyTransform(transform: Transform): void {
+		const matrix = transform.getWorldMatrix();
+		const [a, b, c, d, e, f] = matrix.toCanvasTransform();
+		this.context.transform(a, b, c, d, e, f);
+	}
+
+	public setTransform(transform: Transform): void {
+		const matrix = transform.getWorldMatrix();
+		const [a, b, c, d, e, f] = matrix.toCanvasTransform();
+		this.context.setTransform(a, b, c, d, e, f);
+	}
+	// ======================
+	private getFontString(options: TextOptions): string {
+		const style = options.fontStyle ?? "normal";
+		const weight = options.fontWeight ?? "normal";
+		const size = options.fontSize ?? 16;
+		const family = options.fontFamily ?? "sans-serif";
+		return `${style} ${weight} ${size}px ${family}`;
+	}
+
+	public fillText(
+		text: string,
+		position: Vector2,
+		color: Color,
+		options: TextOptions = {},
+	): void {
+		if (!Number.isFinite(position.x) || !Number.isFinite(position.y)) {
+			throw new Error("Position must have finite coordinates.");
+		}
+		this.context.save();
+		this.context.font = this.getFontString(options);
+		if (options.textAlign) this.context.textAlign = options.textAlign;
+		if (options.textBaseline) this.context.textBaseline = options.textBaseline;
+		this.context.fillStyle = color.hex;
+		if (options.maxWidth !== undefined) {
+			this.context.fillText(text, position.x, position.y, options.maxWidth);
+		} else {
+			this.context.fillText(text, position.x, position.y);
+		}
+		this.context.restore();
+	}
+
+	public strokeText(
+		text: string,
+		position: Vector2,
+		color: Color,
+		options: TextOptions = {},
+	): void {
+		if (!Number.isFinite(position.x) || !Number.isFinite(position.y)) {
+			throw new Error("Position must have finite coordinates.");
+		}
+		this.context.save();
+		this.context.font = this.getFontString(options);
+		if (options.textAlign) this.context.textAlign = options.textAlign;
+		if (options.textBaseline) this.context.textBaseline = options.textBaseline;
+		this.context.strokeStyle = color.hex;
+		// Opcional: definir lineWidth para o contorno do texto
+		if (options.maxWidth !== undefined) {
+			this.context.strokeText(text, position.x, position.y, options.maxWidth);
+		} else {
+			this.context.strokeText(text, position.x, position.y);
+		}
+		this.context.restore();
+	}
+
+	public measureText(text: string, options: TextOptions = {}): TextMetrics {
+		this.context.save();
+		this.context.font = this.getFontString(options);
+		const metrics = this.context.measureText(text);
+		this.context.restore();
+		return metrics;
 	}
 }
