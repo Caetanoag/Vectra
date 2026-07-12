@@ -5,7 +5,7 @@ import {
 	Rect,
 	Transform,
 	Vector2,
-} from "https://cdn.jsdelivr.net/gh/reinhackVancheat/Vectra/lib/index.js";
+} from "https://cdn.jsdelivr.net/gh/reinhackVancheat/Vectra@26aed1a0b05e1f3f0d8cfa7bbaef90deb3ae53b3/lib/index.js";
 
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const renderer = new CanvasRenderer(canvas);

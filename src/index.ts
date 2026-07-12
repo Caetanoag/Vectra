@@ -1,14 +1,7 @@
-export * from "./CanvasRenderer.js";
 export { CanvasRenderer } from "./CanvasRenderer.js";
-export * from "./Color.js";
 export { Color } from "./Color.js";
-export * from "./InputManager.js";
 export { InputManager } from "./InputManager.js";
-export * from "./Matrix3.js";
 export { Matrix3 } from "./Matrix3.js";
-export * from "./Rect.js";
 export { Rect } from "./Rect.js";
-export * from "./Transform.js";
 export { Transform } from "./Transform.js";
-export * from "./Vector2.js";
 export { Vector2 } from "./Vector2.js";
