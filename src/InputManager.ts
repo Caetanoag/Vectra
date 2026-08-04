@@ -34,9 +34,9 @@ export class InputManager {
 			this.keysDown.set(key, value);
 		};
 		window.addEventListener("keydown", (e: KeyboardEvent) =>
-			handleKey(e, true),
-		);
-		window.addEventListener("keyup", (e: KeyboardEvent) => handleKey(e, false));
+      handleKey(e, true),
+    );
+    window.addEventListener("keyup", (e: KeyboardEvent) => handleKey(e, false));
 
 		// Mouse
 		if (this.target instanceof HTMLElement) {
