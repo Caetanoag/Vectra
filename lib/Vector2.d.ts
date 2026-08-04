@@ -2,144 +2,93 @@
  * Represents a 2D vector with x and y components.
  * All operations are immutable, returning new Vector2 instances.
  */
-export class Vector2 {
-    x;
-    y;
+export declare class Vector2 {
+    /** The x-coordinate. Must be finite. */
+    x: number;
+    /** The y-coordinate. Must be finite. */
+    y: number;
     constructor(
     /** The x-coordinate. Must be finite. */
-    x, 
+    x: number, 
     /** The y-coordinate. Must be finite. */
-    y) {
-        this.x = x;
-        this.y = y;
-        if (!Number.isFinite(x))
-            throw new Error(`x must be finite: ${x}`);
-        if (!Number.isFinite(y))
-            throw new Error(`y must be finite: ${y}`);
-    }
+    y: number);
     /** The Euclidean length (magnitude) of the vector. */
-    get length() {
-        return Math.hypot(this.x, this.y);
-    }
+    get length(): number;
     /** Linear interpolation between this vector and another. */
-    lerp(other, t) {
-        if (t < 0 || t > 1)
-            throw new Error("t must be between 0 and 1");
-        return new Vector2(this.x + (other.x - this.x) * t, this.y + (other.y - this.y) * t);
-    }
+    lerp(other: Vector2, t: number): Vector2;
     /** The angle (direction) of this vector in radians. */
-    get angle() {
-        return Math.atan2(this.y, this.x);
-    }
+    get angle(): number;
     /** The squared Euclidean length. Faster than `length` for comparisons. */
-    get lengthSq() {
-        return this.x * this.x + this.y * this.y;
-    }
+    get lengthSq(): number;
     /** Returns a string representation with two decimal places. */
-    toString() {
-        return `Vector2(${this.x.toFixed(2)}, ${this.y.toFixed(2)})`;
-    }
+    toString(): string;
     /**
      * Returns the angle in radians from this vector to another vector.
      * @param v
      * @returns
      */
-    getAngle(v) {
-        return Math.atan2(v.y - this.y, v.x - this.x);
-    }
+    getAngle(v: Vector2): number;
     /**
      * Adds another vector to this one.
      * @param v - The vector to add.
      * @returns A new Vector2 with the sum of both vectors.
      */
-    add(v) {
-        return new Vector2(v.x + this.x, v.y + this.y);
-    }
+    add(v: Vector2): Vector2;
     /**
      * Subtracts another vector from this one.
      * @param v - The vector to subtract.
      * @returns A new Vector2 representing this - v.
      */
-    subtract(v) {
-        return new Vector2(this.x - v.x, this.y - v.y);
-    }
+    subtract(v: Vector2): Vector2;
     /**
      * Scales this vector by a scalar factor.
      * @param s_factor - The scalar multiplier.
      * @returns A new Vector2 with components multiplied by the scalar.
      */
-    scale(s_factor) {
-        return new Vector2(this.x * s_factor, this.y * s_factor);
-    }
+    scale(s_factor: number): Vector2;
     /** Compares vectors with tolerance. */
-    equals(other, epsilon = 1e-9) {
-        if (!(other instanceof Vector2))
-            return false;
-        return (Math.abs(this.x - other.x) < epsilon &&
-            Math.abs(this.y - other.y) < epsilon);
-    }
+    equals(other: Vector2, epsilon?: number): boolean;
     /**
      * Negates the vector (multiplies by -1).
      * @returns A new Vector2 with both components negated.
      */
-    negate() {
-        return new Vector2(-this.x, -this.y);
-    }
-    truncate() {
-        return new Vector2(Math.trunc(this.x), Math.trunc(this.y));
-    }
+    negate(): Vector2;
+    truncate(): Vector2;
     /**
      *  Clamps the vector components between min and max values.
      * @param min - The min values to x and y, represented by a Vector2 instance
      * @param max - The max values of x and y, represented by a Vector2 instance
      */
-    clamp(min, max) {
-        return new Vector2(Math.max(min.x, Math.min(max.x, this.x)), Math.max(min.y, Math.min(max.y, this.y)));
-    }
+    clamp(min: Vector2, max: Vector2): Vector2;
     /**
      * Computes the component-wise product (Hadamard product).
      * @param v - The other vector.
      * @returns A new Vector2 with components multiplied element-wise.
      */
-    hadamar(v) {
-        return new Vector2(this.x * v.x, this.y * v.y);
-    }
+    hadamar(v: Vector2): Vector2;
     /**
      * Computes the dot product (scalar product).
      * @param v - The other vector.
      * @returns The dot product as a number.
      */
-    dot(v) {
-        return this.x * v.x + this.y * v.y;
-    }
+    dot(v: Vector2): number;
     /**
      * Computes the Euclidean distance to another vector.
      * @param v - The other vector.
      * @returns The distance as a number.
      */
-    distanceTo(v) {
-        const dx = this.x - v.x;
-        const dy = this.y - v.y;
-        return Math.hypot(dx, dy);
-    }
+    distanceTo(v: Vector2): number;
     /**
      * Returns a normalized (unit) vector in the same direction.
      * If the vector is zero, returns a zero vector.
      * @returns A new Vector2 with length 1, or zero vector if length is 0.
      */
-    normalized() {
-        const length = this.length;
-        if (length === 0)
-            return new Vector2(0, 0);
-        return new Vector2(this.x / length, this.y / length);
-    }
+    normalized(): Vector2;
     /**
      * Creates a unit vector from an angle.
      * @param radians - The angle in radians.
      * @returns A new Vector2 representing (cos(angle), sin(angle)).
      */
-    static fromAngle(radians) {
-        return new Vector2(Math.cos(radians), Math.sin(radians));
-    }
+    static fromAngle(radians: number): Vector2;
 }
-//# sourceMappingURL=Vector2.js.map
+//# sourceMappingURL=Vector2.d.ts.map
