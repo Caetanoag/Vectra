@@ -91,7 +91,7 @@ Immutable 2D vector — all operations return new instances.
 - `new Vector2(x, y)` — `x` and `y` must be finite
 - `add(v): Vector2`
 - `subtract(v): Vector2`
-- `scale(factor): Vector2`
+- `(factor): Vector2`
 - `negate(): Vector2`
 - `hadamar(v): Vector2` – component-wise (Hadamard) product
 - `dot(v): number`
