@@ -116,6 +116,14 @@ export class Rect {
   public get center(): Vector2 {
     return new Vector2(this.x + this.width / 2, this.y + this.height / 2);
   }
+  /** Returns the size (width, height) as a Vector2. */
+  public get size(): Vector2 {
+    return new Vector2(this.width, this.height);
+  }
+  /** Returns the aspect ratio (width / height). */
+  public get aspectRatio(): number {
+    return this.width / this.height;
+  }
 
   /** Returns the width. */
   public getWidth(): number {
@@ -211,7 +219,32 @@ export class Rect {
     this.normalize();
     return this;
   }
+  /** Rounds all values to the nearest integer, returning the same rect. */
+  public round(): this {
+    this.x = Math.round(this.x);
+    this.y = Math.round(this.y);
+    this.width = Math.round(this.width);
+    this.height = Math.round(this.height);
+    return this;
+  }
 
+  /** Scales the rect from its top-left corner, returning the same rect. */
+  public scale(sx: number, sy: number): this {
+    this.width *= sx;
+    this.height *= sy;
+    return this;
+  }
+
+  /** Scales the rect from its center, returning the same rect. */
+  public scaleFromCenter(sx: number, sy: number): this {
+    const cx = this.x + this.width / 2;
+    const cy = this.y + this.height / 2;
+    this.width *= sx;
+    this.height *= sy;
+    this.x = cx - this.width / 2;
+    this.y = cy - this.height / 2;
+    return this;
+  }
   /**
    * Computes the union of two rectangles.
    * @param box - The other rectangle.
@@ -248,7 +281,17 @@ export class Rect {
   public isEmpty(): boolean {
     return this.width === 0 || this.height === 0;
   }
-
+  /** Squared distance from a point to the nearest edge (0 if inside).
+   */
+  public distanceSquaredToPoint(point: Vector2): number {
+    const dx = Math.max(this.left - point.x, 0, point.x - this.right);
+    const dy = Math.max(this.top - point.y, 0, point.y - this.bottom);
+    return dx * dx + dy * dy;
+  }
+  /** Euclidean distance from a point to the nearest edge. */
+  public distanceToPoint(point: Vector2): number {
+    return Math.sqrt(this.distanceSquaredToPoint(point));
+  }
   /**
    * Compares two rectangles for exact equality.
    * @param box - The other rectangle.
@@ -277,7 +320,63 @@ export class Rect {
       this.height *= -1;
     }
   }
+  /**
+   * Returns a new Vector2 clamped to the inside of this rectangle (inclusive).
+   * @param point - Vector2 representing the point
+   */
+  public clampPoint(point: Vector2): Vector2 {
+    return point.clamp(
+      new Vector2(this.left, this.top), // ✅ min = (esquerda, topo)
+      new Vector2(this.right, this.bottom), // ✅ max = (direita, base)
+    );
+  }
 
+  /**
+   * Generates a random rectangle fully contained within a given boundary.
+   * @param boundary - The outer container.
+   * @param minWidth - Minimum width of the generated rect (default 1).
+   * @param minHeight - Minimum height of the generated rect (default 1).
+   * @returns A new Rect with random position and size inside the boundary.
+   */
+  public static generateRandomInside(
+    boundary: Rect,
+    minWidth: number = 1,
+    minHeight: number = 1,
+  ): Rect {
+    if (!(boundary instanceof Rect)) {
+      throw new Error("Boundary must be Rect instance");
+    }
+    const maxWidth = boundary.width - minWidth;
+    const maxHeight = boundary.height - minHeight;
+
+    if (maxWidth < 0 || maxHeight < 0) {
+      throw new Error(
+        "Boundary is too small for the minimum size constraints.",
+      );
+    }
+    const width = minWidth + Math.random() * maxWidth;
+    const height = minHeight + Math.random() * maxHeight;
+    const x = boundary.left + Math.random() * (boundary.width - width);
+    const y = boundary.top + Math.random() * (boundary.height - height);
+    return new Rect(x, y, width, height);
+  }
+  /** Creates a Rect from a center point and a size Vector2.
+   * @param center - The center coordinates
+   * @param size   - The width and height as a Vector2
+   * @returns A new Rect created from the center point
+   */
+  public static fromCenter(center: Vector2, size: Vector2): Rect {
+    const half = size.scale(0.5);
+    return new Rect(center.x - half.x, center.y - half.y, size.x, size.y);
+  }
+  /** Creates a Rect that exactly spans between two corner points. */
+  public static fromCorners(a: Vector2, b: Vector2): Rect {
+    const left = Math.min(a.x, b.x);
+    const right = Math.max(a.x, b.x);
+    const top = Math.min(a.y, b.y);
+    const bottom = Math.max(a.y, b.y);
+    return new Rect(left, top, right - left, bottom - top);
+  }
   /**
    * Validates that all numeric values are finite.
    * @private
@@ -291,5 +390,8 @@ export class Rect {
         );
       }
     }
+  }
+  public toString(): string {
+    return `Rect(x=${this.x}, y=${this.y}, w=${this.width}, h=${this.height})`;
   }
 }
