@@ -324,6 +324,18 @@ export declare class Vector2 {
      */
     normalized(): Vector2;
     /**
+     * Clones this vector instance into a new vector2
+     * @returns A new vector with the same information
+     * @example
+     * ```typescript
+     * const v = new Vector2(10, 5);
+     * const vClone = v.clone();
+     * console.log(vClone.toString()) // Vector2(10.00, 5.00)
+     * console.log(vClone === v) // false
+     * ```
+     */
+    clone(): Vector2;
+    /**
      * Returns a new vector with the same direction but a different length.
      * If the vector is zero, returns a zero vector regardless of `newLength`.
      * @param newLength - The desired magnitude.
