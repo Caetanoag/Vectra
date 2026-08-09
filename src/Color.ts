@@ -232,7 +232,7 @@ export class Color {
    * ```
    */
   public lighten(factor: number): Color {
-    return this.darken(1 + factor);
+    return this.darken(Math.min				(1, 1 + factor));
   }
 
   /**
