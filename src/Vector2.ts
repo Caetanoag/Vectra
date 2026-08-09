@@ -133,7 +133,25 @@ export class Vector2 {
   public getAngle(v: Vector2): number {
     return Math.atan2(v.y - this.y, v.x - this.x);
   }
-
+  /**
+   * Computes the signed angle from this vector to another vector.
+   * The result is in radians and lies in [-π, π].
+   * Positive values indicate a counter‑clockwise rotation.
+   *
+   * @param v - The target vector.
+   * @returns The angle in radians from `this` to `v`.
+   * @example
+   * ```typescript
+   * const a = new Vector2(1, 0);
+   * const b = new Vector2(0, 1);
+   * console.log(a.angleTo(b)); // π/2 (≈1.5708)
+   * ```
+   */
+  public angleTo(v: Vector2): number {
+    const dot = this.dot(v);
+    const cross = this.cross(v);
+    return Math.atan2(cross, dot);
+  }
   /**
    * Adds another vector to this one.
    *
@@ -195,7 +213,25 @@ export class Vector2 {
   public scale(s_factor: number): Vector2 {
     return new Vector2(this.x * s_factor, this.y * s_factor);
   }
-
+  /**
+   * Rotates this vector counter-clockwise by a given angle (in radians).
+   *
+   * @param angle - The rotation angle in radians.
+   * @returns A new Vector2 representing the rotated vector.
+   * @example
+   * ```typescript
+   * const v = new Vector2(1, 0);
+   * const rotated = v.rotate(Math.PI / 2); // Vector2(~0, 1)
+   * ```
+   */
+  public rotate(angle: number): Vector2 {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return new Vector2(
+      this.x * cos - this.y * sin,
+      this.x * sin + this.y * cos,
+    );
+  }
   /**
    * Compares vectors with tolerance for floating-point errors.
    *
@@ -264,7 +300,31 @@ export class Vector2 {
       Math.max(min.y, Math.min(max.y, this.y)),
     );
   }
+  /**
+   * Clamps the vector's magnitude to the range [min, max] without changing its direction.
+   * If the vector is zero, returns a zero vector.
+   *
+   * @param min - Minimum allowed length (must be ≥ 0).
+   * @param max - Maximum allowed length (must be ≥ min).
+   * @returns A new Vector2 with length clamped to [min, max].
+   * @throws If `min` < 0 or `max` < min.
+   * @example
+   * ```typescript
+   * const v = new Vector2(10, 0);
+   * const clamped = v.clampLength(1, 5); // Vector2(5, 0)
+   * ```
+   */
+  public clampLength(min: number, max: number): Vector2 {
+    if (min < 0) throw new Error(`min must be >= 0, got ${min}`);
+    if (max < min) throw new Error(`max must be >= min, got ${max} < ${min}`);
 
+    const len = this.length;
+    if (len === 0) return Vector2.zero;
+
+    const clamped = Math.min(Math.max(len, min), max);
+    const scale = clamped / len;
+    return new Vector2(this.x * scale, this.y * scale);
+  }
   /**
    * Computes the component-wise product (Hadamard product).
    *
@@ -296,7 +356,28 @@ export class Vector2 {
   public dot(v: Vector2): number {
     return this.x * v.x + this.y * v.y;
   }
-
+  /**
+   * Computes the 2D cross product (scalar) of this vector and another.
+   * In 2D, cross product is defined as: this.x * v.y - this.y * v.x.
+   * It represents the signed area of the parallelogram formed by the two vectors,
+   * and is positive if `v` is counter‑clockwise from `this`.
+   *
+   * @param v - The other vector.
+   * @returns The scalar cross product.
+   * @example
+   * ```typescript
+   * const a = new Vector2(1, 0);
+   * const b = new Vector2(0, 1);
+   * console.log(a.cross(b)); // 1 (positive: b is CCW from a)
+   *
+   * const c = new Vector2(1, 1);
+   * const d = new Vector2(2, 2);
+   * console.log(c.cross(d)); // 0 (collinear vectors)
+   * ```
+   */
+  public cross(v: Vector2): number {
+    return this.x * v.y - this.y * v.x;
+  }
   /**
    * Computes the Euclidean distance to another vector.
    *
@@ -331,7 +412,54 @@ export class Vector2 {
     if (length === 0) return new Vector2(0, 0);
     return new Vector2(this.x / length, this.y / length);
   }
+  /**
+   * Returns a new vector with the same direction but a different length.
+   * If the vector is zero, returns a zero vector regardless of `newLength`.
+   * @param newLength - The desired magnitude.
+   * @returns A new Vector2 with the specified length.
+   * @example
+   * ```typescript
+   * const v = new Vector2(3, 4);
+   * const u = v.withLength(10); // Vector2(6, 8) – length = 10
+   * ```
+   */
+  public withLength(newLength: number): Vector2 {
+    const len = this.length;
+    if (len === 0) return Vector2.zero; // ou new Vector2(0,0)
+    const scale = newLength / len;
+    return new Vector2(this.x * scale, this.y * scale);
+  }
+  /**
+   * Returns a new vector with the x-coordinate replaced by `newX`.
+   * The y-coordinate remains unchanged.
+   *
+   * @param newX - The new x value.
+   * @returns A new Vector2 with the updated x.
+   * @example
+   * ```typescript
+   * const v = new Vector2(3, 4);
+   * const u = v.withX(10); // Vector2(10, 4)
+   * ```
+   */
+  public withX(newX: number): Vector2 {
+    return new Vector2(newX, this.y);
+  }
 
+  /**
+   * Returns a new vector with the y-coordinate replaced by `newY`.
+   * The x-coordinate remains unchanged.
+   *
+   * @param newY - The new y value.
+   * @returns A new Vector2 with the updated y.
+   * @example
+   * ```typescript
+   * const v = new Vector2(3, 4);
+   * const u = v.withY(10); // Vector2(3, 10)
+   * ```
+   */
+  public withY(newY: number): Vector2 {
+    return new Vector2(this.x, newY);
+  }
   /**
    * Creates a unit vector from an angle.
    *
@@ -345,5 +473,18 @@ export class Vector2 {
    */
   static fromAngle(radians: number): Vector2 {
     return new Vector2(Math.cos(radians), Math.sin(radians));
+  }
+  /**
+   * Creates a vector from polar coordinates (angle and length).
+   * @param angle - Direction in radians.
+   * @param length - Magnitude (default 1).
+   * @returns A new Vector2 with the given direction and length.
+   * @example
+   * ```typescript
+   * const v = Vector2.fromPolar(Math.PI / 4, 5); // Vector2(3.5355, 3.5355)
+   * ```
+   */
+  static fromPolar(angle: number, length: number = 1): Vector2 {
+    return new Vector2(Math.cos(angle) * length, Math.sin(angle) * length);
   }
 }
