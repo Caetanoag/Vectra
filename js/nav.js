@@ -8,7 +8,7 @@ const a = () => {
       levels -= 1;
     }
 
-    return levels <= 0 ? "./" : "../".repeat(levels);
+    return levels <= 0 ? "./" : "../".repeat(levels-1*(location.hostname !== "localhost"));
   }
 
   function normalizedPath(url) {
@@ -60,6 +60,7 @@ const a = () => {
 
   async function loadNav() {
     const prefix = computePrefix();
+    console.log(`${prefix}html/nav.html`);
     const nav = document.querySelector(".site-nav");
     if (nav) return initNav(nav);
 
