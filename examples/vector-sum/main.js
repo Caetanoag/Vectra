@@ -1,4 +1,4 @@
-import { CanvasRenderer, Color, Vector2 } from "/lib/index.js";
+import { CanvasRenderer, Color, Vector2 } from "/Vectra/lib/index.js";
 import { drawGrid } from "../shared/backgrounds.js";
 
 const canvas = document.getElementById("canvas");

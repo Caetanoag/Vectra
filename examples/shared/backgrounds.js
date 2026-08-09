@@ -1,4 +1,4 @@
-import { Color, Vector2 } from "/lib/index.js";
+import { Color, Vector2 } from "/Vectra/lib/index.js";
 
 export function drawGrid(
   renderer,
