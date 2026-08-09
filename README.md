@@ -22,7 +22,7 @@ import {
 
 ### From local installation
 
-If you clone the repository and install dependencies, you can import from the `lib/` folder:
+If you clone the repository, you can import from the `lib/` folder — you only need that directory:
 
 ```javascript
 import {
@@ -40,13 +40,33 @@ import {
 
 ## Installation
 
+Vectra ships as a plain ES module — there are no runtime dependencies and no build step required.
+
+### From the repository
+
 ```bash
-git clone git@github.com:caetanoag/Vectra.git
+git clone https://github.com/caetanoag/Vectra.git
 cd Vectra
-yarn install
 ```
 
-The source code lives in `src/`. Building generates the `dist/` folder with JavaScript files and TypeScript declarations.
+That clones the whole repository, but you only need the `lib/` directory. You can delete everything else. From the parent folder, first verify what will be removed:
+
+```bash
+cd ..
+# Prints everything that will be deleted; make sure it looks correct
+find ./Vectra/ -mindepth 1 -path "./Vectra/lib" -prune -o -print
+```
+
+Then delete every file except `lib/`:
+
+```bash
+# Deletes everything in Vectra/, except the lib directory
+find ./Vectra/ -mindepth 1 -path "./Vectra/lib" -prune -o -exec rm -rf {} +
+```
+
+Now import from `./Vectra/lib/index.js` (or copy the `lib/` folder into your project).
+
+> **Developers:** if you want to build from `src/`, run `yarn install && yarn build` — that generates the `lib/` and `dist/` folders with JavaScript files and TypeScript declarations.
 
 ---
 
@@ -77,8 +97,6 @@ renderer.strokeRect(rect, Color.white(), 2);
 const center = new Vector2(400, 200);
 renderer.fillCircle(center, 80, Color.fromRgb(231, 76, 60));
 ```
-
-> **Note:** `clear()` no longer takes a color — only an optional `Rect` to clear a specific region. To paint the background, use `fillRect` over the desired area.
 
 ---
 
@@ -241,41 +259,12 @@ Text options (`TextOptions`):
 
 ## Running Examples
 
-The examples are in the `examples/` folder. To compile and run:
-
-```bash
-cd examples
-tsc          # generates main.js
-```
-
-Then open `examples/example/index.html` in a browser (use a local server like `serve` or `live-server`). From the project root you can also run:
+The examples live in `docs/examples/` and need no build step — each page loads its own `main.js` directly. To browse them, serve the repository root with a local server:
 
 ```bash
 yarn dev
 ```
 
-which serves the current directory with python3 (if installed).
+which serves the current directory with python3 (if installed). Then open [http://localhost:3000/docs/examples/](http://localhost:3000/docs/examples/) in a browser. The examples hub is also linked from the navigation sidebar of the documentation.
 
 ---
-
-## Repository Structure
-
-```
-Vectra/
-├── dist/               # Transpiled output (JavaScript + .d.ts)
-├── src/                # Source code (TypeScript)
-│   ├── CanvasRenderer.ts
-│   ├── Color.ts
-│   ├── InputManager.ts
-│   ├── Matrix3.ts
-│   ├── Rect.ts
-│   ├── Transform.ts
-│   ├── Vector2.ts
-│   └── index.ts
-├── examples/           # Example usage
-├── lib/                # .js files transpiled from src/
-├── package.json
-├── tsconfig.json
-├── yarn.lock
-└── README.md
-```

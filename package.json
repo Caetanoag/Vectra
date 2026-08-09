@@ -1,17 +1,17 @@
 {
-	"name": "Vectra",
-	"version": "1.0.0",
-	"main": "index.js",
-	"license": "MIT",
-	"devDependencies": {
-		"@types/node": "^26.1.1",
-		"typescript": "^7.0.2"
-	},
-	"type": "module",
-	"scripts": {
-		"build": "tsc",
-		"clean": "rm -rf dist/* && rm -rf lib/*",
-		"commit": "tsc -p tsconfig.dev.json",
-		"dev": "python3 -m http.server 3000"
-	}
+  "name": "vectra",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^7.0.2"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist/* && rm -rf lib/*",
+    "commit": "tsc -p tsconfig.dev.json",
+    "dev": "python3 -m http.server 3000"
+  }
 }
