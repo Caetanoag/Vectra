@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vector Sum · CanvasRenderer Dem</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+            integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/automad-prism-themes@0.3.7/dist/prism-atom-one-dark.css"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <link rel="stylesheet" href="../../css/style.css" />
+        <link rel="stylesheet" href="../../css/nav.css" />
+        <script src="../../js/nav.js" defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Vector Sum</h1>
+            </header>
+
+            <div class="demo-wrapper">
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>What you see</h3>
+                    <p>
+                        The <span class="badge badge-red">red</span> and
+                        <span class="badge badge-green">green</span> vectors are
+                        added head‑to‑tail. The
+                        <span class="badge badge-blue">blue</span>
+                        vector represents their sum — drawn from the same
+                        origin. The red vector rotates continuously, showing how
+                        the resultant changes.
+                    </p>
+                </div>
+                <div class="info-card">
+                    <h3>API features used</h3>
+                    <p>
+                        <code>CanvasRenderer</code> · <code>Vector2</code> ·
+                        <code>Color</code>
+                    </p>
+                    <p style="margin-top: 0.5rem">
+                        All vector operations are <strong>immutable</strong> —
+                        each <code>add</code>, <code>scale</code>,
+                        <code>rotate</code> returns a new instance.
+                    </p>
+                </div>
+            </div>
+            <div class="code-section">
+                <h3>Source code</h3>
+                <pre><code class="language-javascript" id="source-code">
+                </code></pre>
+            </div>
+
+            <div class="footer">
+                <p>
+                    Built using the <strong>Vectra</strong> graphical library
+                    <a href="#">Documentation</a> &middot;
+                    <a href="https://github.com/caetanoag/Vectra">GitHub</a>
+                </p>
+            </div>
+        </div>
+        <script>
+            (async function () {
+                try {
+                    const response = await fetch("./main.js");
+                    const code = await response.text();
+                    const codeElement = document.getElementById("source-code");
+                    codeElement.textContent = code;
+                    if (typeof Prism !== "undefined") {
+                        Prism.highlightElement(codeElement);
+                    } else {
+                        console.warn("Error loading Prism Highlighter");
+                    }
+                } catch (err) {
+                    console.error("Error loading source code", err);
+                    document.getElementById("source-code").textContent =
+                        "Error loading source code\n" + err.message;
+                }
+            })();
+        </script>
+
+        <script type="module" src="main.js"></script>
+    </body>
+</html>

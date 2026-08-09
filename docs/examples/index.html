@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Examples · Vectra</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+            integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/nav.css" />
+        <script src="../js/nav.js" defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Examples</h1>
+                <p class="subtitle">
+                    Live demos of Vectra in action — each one runs in a single file
+                    with no build step required
+                </p>
+            </header>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>How to explore</h3>
+                    <p>
+                        Every example is a self-contained page: open it, interact
+                        with the demo and read the annotated source code right below
+                        the canvas.
+                    </p>
+                </div>
+                <div class="info-card">
+                    <h3>Under the hood</h3>
+                    <p>
+                        Demos import the compiled library from
+                        <code>lib/index.js</code> directly in the browser, so you
+                        can inspect and modify them without any bundler.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>
+                        <a href="vector-sum/index.html" style="text-decoration: none; color: inherit">Vector Sum</a>
+                    </h3>
+                    <p>
+                        Two vectors added head‑to‑tail with their resultant drawn
+                        live — the red vector rotates to show how the sum changes.
+                    </p>
+                    <p style="margin-top: 0.5rem">
+                        <span class="badge badge-red">demo</span>
+                        <span class="badge badge-blue">vector</span>
+                        <span class="badge badge-green">canvas</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>
+                    Built using the <strong>Vectra</strong> graphical library
+                    <a href="../index.html">Documentation</a> &middot;
+                    <a href="https://github.com/caetanoag/Vectra">GitHub</a>
+                </p>
+            </div>
+        </div>
+    </body>
+</html>
