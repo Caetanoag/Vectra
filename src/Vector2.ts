@@ -27,7 +27,22 @@ export class Vector2 {
     if (!Number.isFinite(x)) throw new Error(`x must be finite: ${x}`);
     if (!Number.isFinite(y)) throw new Error(`y must be finite: ${y}`);
   }
-
+  /**
+   * @returns new Vector(0, 0)
+   */
+  static readonly zero = new Vector2(0, 0);
+  /**
+   * @returns new Vector(1, 1)
+   */
+  static readonly one = new Vector2(1, 1);
+  /**
+   * @returns new Vector(1, 0)
+   */
+  static readonly right = new Vector2(1, 0);
+  /**
+   * @returns new Vector(0, 1)
+   */
+  static readonly up = new Vector2(0, 1);
   /**
    * The Euclidean length (magnitude) of the vector.
    *
