@@ -18,7 +18,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
         <link rel="stylesheet" href="../../css/style.css" />
         <link rel="stylesheet" href="../../css/nav.css" />
-        <script src="../../js/nav.js" defer></script>
+        <script src="/Vectra/js/nav.js" defer></script>
     </head>
     <body>
         <div class="container">
@@ -71,7 +71,7 @@
             </div>
         </div>
         <script>
-            (async function () {
+            async function getScript() {
                 try {
                     const response = await fetch("./main.js");
                     const code = await response.text();
@@ -85,9 +85,10 @@
                 } catch (err) {
                     console.error("Error loading source code", err);
                     document.getElementById("source-code").textContent =
-                        "Error loading source code\n" + err.message;
+                        `Error loading source code\n ${err.message}`;
                 }
-            })();
+            };
+            getScript();
         </script>
 
         <script type="module" src="main.js"></script>

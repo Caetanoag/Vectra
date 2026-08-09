@@ -1,14 +1,12 @@
 const a = () => {
   const FILE_RE = /\.html?$/i;
-
   function computePrefix() {
     const segments = location.pathname.split("/").filter(Boolean);
-    let levels = segments.length;
-    if (levels > 0 && FILE_RE.test(segments[levels - 1])) {
-      levels -= 1;
+    if (segments.length > 0 && FILE_RE.test(segments[segments.length - 1])) {
+      segments.pop();
     }
-
-    return levels <= 0 ? "./" : "../".repeat(levels-1*(location.hostname !== "localhost"));
+    const levels = Math.max(0, segments.length - 1);
+    return levels <= 0 ? "./" : "../".repeat(levels);
   }
 
   function normalizedPath(url) {
@@ -60,7 +58,7 @@ const a = () => {
 
   async function loadNav() {
     const prefix = computePrefix();
-    console.log(`${prefix}html/nav.html`);
+
     const nav = document.querySelector(".site-nav");
     if (nav) return initNav(nav);
 
