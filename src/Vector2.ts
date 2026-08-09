@@ -134,7 +134,22 @@ export class Vector2 {
   public add(v: Vector2): Vector2 {
     return new Vector2(v.x + this.x, v.y + this.y);
   }
-
+  /**
+   * Translates (moves) this vector by the given deltas.
+   * Semantic alias for adding a displacement vector.
+   *
+   * @param dx - The amount to add to the x-coordinate.
+   * @param dy - The amount to add to the y-coordinate.
+   * @returns A new Vector2 representing the translated position.
+   * @example
+   * ```typescript
+   * const pos = new Vector2(10, 5);
+   * const moved = pos.translate(3, -2); // Vector2(13, 3)
+   * ```
+   */
+  public translate(dx: number, dy: number): Vector2 {
+    return new Vector2(this.x + dx, this.y + dy);
+  }
   /**
    * Subtracts another vector from this one.
    *
