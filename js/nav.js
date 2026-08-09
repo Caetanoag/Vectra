@@ -1,12 +1,10 @@
-(function () {
+const a = () => {
   const FILE_RE = /\.html?$/i;
 
   function computePrefix() {
     const segments = location.pathname.split("/").filter(Boolean);
-    const docsIndex = segments.indexOf("docs");
-    const afterDocs = docsIndex === -1 ? segments : segments.slice(docsIndex + 1);
-    let levels = afterDocs.length;
-    if (levels > 0 && FILE_RE.test(afterDocs[levels - 1])) {
+    let levels = segments.length;
+    if (levels > 0 && FILE_RE.test(segments[levels - 1])) {
       levels -= 1;
     }
 
@@ -66,8 +64,8 @@
     if (nav) return initNav(nav);
 
     try {
-      const response = await fetch(prefix + "html/nav.html");
-      if (!response.ok) throw new Error("HTTP " + response.status);
+      const response = await fetch(`${prefix}html/nav.html`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const markup = await response.text();
       document.body.insertAdjacentHTML("afterbegin", markup);
 
@@ -82,4 +80,5 @@
   }
 
   loadNav();
-})();
+}
+a();
