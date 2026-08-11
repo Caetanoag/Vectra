@@ -122,7 +122,61 @@ export class Color {
   public get brightness(): number {
     return 0.299 * this.r + 0.587 * this.g + 0.114 * this.b;
   }
-
+  /**
+   * Returns the HSL (Hue, Saturation, Lightness) representation of the color.
+   *
+   * Hue is expressed in degrees (0–360), while saturation and lightness are
+   * normalized values between 0 and 1. This conversion follows the standard
+   * RGB-to-HSL algorithm.
+   *
+   * @returns An object containing the hue, saturation, and lightness components.
+   *
+   * @example
+   * ```typescript
+   * const red = Color.fromRgb(255, 0, 0);
+   * console.log(red.hsl); // { hue: 0, saturation: 1, lightness: 0.5 }
+   * ```
+   *
+   * @example
+   * ```typescript
+   * const gray = Color.fromRgb(128, 128, 128);
+   * console.log(gray.hsl); // { hue: 0, saturation: 0, lightness: 0.5 }
+   * ```
+   *
+   * @example
+   * ```typescript
+   * const white = Color.white();
+   * console.log(white.hsl); // { hue: 0, saturation: 0, lightness: 1 }
+   * ```
+   */
+  public get hsl(): { hue: number; saturation: number; lightness: number } {
+    const getHue = (max: number, chroma: number) => {
+      let hue: number = 60;
+      if (chroma === 0) return 0;
+      if (max === this.r) {
+        hue *= (this.g - this.b) / chroma;
+      } else if (max === this.g) {
+        hue *= (this.b - this.r + 2 * chroma) / chroma;
+      } else if (max === this.b) {
+        hue *= (this.r - this.g + 4 * chroma) / chroma;
+      }
+      hue = (hue + 360) % 360;
+      return hue;
+    };
+    const max = Math.max(this.r, this.g, this.b);
+    const min = Math.min(this.r, this.g, this.b);
+    const chroma = max - min;
+    const lightness = (max + min) / 2;
+    const saturation = () => {
+      if (chroma === 0) return 0;
+      return chroma / (1 - Math.abs(2 * lightness - 1));
+    };
+    return {
+      hue: getHue(max, chroma),
+      saturation: saturation(),
+      lightness: lightness,
+    };
+  }
   /**
    * Performs linear interpolation between this color and another.
    *
@@ -219,7 +273,6 @@ export class Color {
   public darken(factor: number): Color {
     return new Color(this.r * factor, this.g * factor, this.b * factor, this.a);
   }
-
   /**
    * Returns a new Color lightened.
    *
@@ -232,9 +285,8 @@ export class Color {
    * ```
    */
   public lighten(factor: number): Color {
-    return this.darken(Math.min				(1, 1 + factor));
+    return this.darken(Math.min(1, 1 + factor));
   }
-
   /**
    * Creates a Color from a hexadecimal string.
    * Supports formats: `#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`.
@@ -309,7 +361,6 @@ export class Color {
     const alpha = a !== undefined ? a / 255 : undefined;
     return new Color(r / 255, g / 255, b / 255, alpha);
   }
-
   /**
    * Returns pure white `Color(1, 1, 1)`.
    *

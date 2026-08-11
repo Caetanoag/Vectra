@@ -2,4 +2,4 @@ node_modules/
 .env
 dist/
 tsconfig.dev.json
-docs/specs
+docs/
