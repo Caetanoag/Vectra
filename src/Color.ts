@@ -333,7 +333,113 @@ export class Color {
 
     return new Color(r / 255, g / 255, b / 255, a / 255);
   }
-
+  /**
+   * Creates a Color from HSL (Hue, Saturation, Lightness) values.
+   *
+   * This method uses the standard HSL color model, where:
+   * - Hue is expressed as an angle in degrees (0–360), representing the color's
+   *   position on the color wheel (red at 0°, green at 120°, blue at 240°).
+   * - Saturation is a normalized value (0–1), where 0 is grayscale and 1 is full
+   *   color intensity.
+   * - Lightness is a normalized value (0–1), where 0 is black and 1 is white.
+   *
+   * Input values are strictly validated, and the resulting RGB components
+   * are returned as numbers in the range 0–1, matching the Color constructor.
+   *
+   * @param h - The hue angle in degrees (0–360).
+   * @param s - The saturation level (0–1).
+   * @param l - The lightness level (0–1).
+   * @returns A new Color instance representing the specified HSL color.
+   * @throws {Error} If any parameter is not a finite number.
+   * @throws {Error} If hue is outside the range 0–360.
+   * @throws {Error} If saturation or lightness is outside the range 0–1.
+   *
+   * @example
+   * ```typescript
+   * // Pure red
+   * const red = Color.fromHsl(0, 1, 0.5);
+   * console.log(red.r, red.g, red.b); // 1, 0, 0
+   * ```
+   *
+   * @example
+   * ```typescript
+   * // Pure green
+   * const green = Color.fromHsl(120, 1, 0.5);
+   * console.log(green.r, green.g, green.b); // 0, 1, 0
+   * ```
+   *
+   * @example
+   * ```typescript
+   * // Pure blue
+   * const blue = Color.fromHsl(240, 1, 0.5);
+   * console.log(blue.r, blue.g, blue.b); // 0, 0, 1
+   * ```
+   *
+   * @example
+   * ```typescript
+   * // 50% gray (achromatic)
+   * const gray = Color.fromHsl(0, 0, 0.5);
+   * console.log(gray.r, gray.g, gray.b); // 0.5, 0.5, 0.5
+   * ```
+   *
+   * @example
+   * ```typescript
+   * // White and black
+   * console.log(Color.fromHsl(0, 0, 1)); // (1, 1, 1)
+   * console.log(Color.fromHsl(0, 0, 0)); // (0, 0, 0)
+   * ```
+   */
+  static fromHsl(h: number, s: number, l: number): Color {
+    if (!Number.isFinite(h))
+      throw new Error(`Invalid value for hue: ${h}. Expected number`);
+    if (!Number.isFinite(s))
+      throw new Error(`Invalid value for saturation: ${s}. Expected number`);
+    if (!Number.isFinite(l))
+      throw new Error(`Invalid value for lightness: ${l}. Expected number`);
+    if (h < 0 || h > 360) throw new Error(`Hue must be between 0 and 360`);
+    if (s < 0 || s > 1 || l < 0 || l > 1)
+      throw new Error(`Saturation and Lightness must be between 0 and 1`);
+    if (s === 0) {
+      return new Color(l, l, l);
+    }
+    h = h % 360;
+    const chroma = (1 - Math.abs(2 * l - 1)) * s;
+    const ramp = chroma * (1 - Math.abs(((h / 60) % 2) - 1));
+    const match = l - chroma / 2;
+    let redBefore: number = 0;
+    let greenBefore: number = 0;
+    let blueBefore: number = 0;
+    if (h < 60) {
+      redBefore = chroma;
+      greenBefore = ramp;
+      blueBefore = 0;
+    } else if (h < 120) {
+      redBefore = ramp;
+      greenBefore = chroma;
+      blueBefore = 0;
+    } else if (h < 180) {
+      redBefore = 0;
+      greenBefore = chroma;
+      blueBefore = ramp;
+    } else if (h < 240) {
+      redBefore = 0;
+      greenBefore = ramp;
+      blueBefore = chroma;
+    } else if (h < 300) {
+      redBefore = ramp;
+      greenBefore = 0;
+      blueBefore = chroma;
+    } else if (h < 360) {
+      redBefore = chroma;
+      greenBefore = 0;
+      blueBefore = ramp;
+    }
+    return new Color(
+      redBefore + match,
+      greenBefore + match,
+      blueBefore + match,
+    );
+  }
   /**
    * Creates a Color from integer RGB (0-255) channels.
    *
