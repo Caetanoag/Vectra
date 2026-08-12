@@ -84,6 +84,38 @@ export declare class Color {
      */
     get brightness(): number;
     /**
+     * Returns the HSL (Hue, Saturation, Lightness) representation of the color.
+     *
+     * Hue is expressed in degrees (0–360), while saturation and lightness are
+     * normalized values between 0 and 1. This conversion follows the standard
+     * RGB-to-HSL algorithm.
+     *
+     * @returns An object containing the hue, saturation, and lightness components.
+     *
+     * @example
+     * ```typescript
+     * const red = Color.fromRgb(255, 0, 0);
+     * console.log(red.hsl); // { hue: 0, saturation: 1, lightness: 0.5 }
+     * ```
+     *
+     * @example
+     * ```typescript
+     * const gray = Color.fromRgb(128, 128, 128);
+     * console.log(gray.hsl); // { hue: 0, saturation: 0, lightness: 0.5 }
+     * ```
+     *
+     * @example
+     * ```typescript
+     * const white = Color.white();
+     * console.log(white.hsl); // { hue: 0, saturation: 0, lightness: 1 }
+     * ```
+     */
+    get hsl(): {
+        hue: number;
+        saturation: number;
+        lightness: number;
+    };
+    /**
      * Performs linear interpolation between this color and another.
      *
      * @param other - The target color.
@@ -136,29 +168,33 @@ export declare class Color {
      */
     withAlpha(alpha: number): Color;
     /**
-     * Returns a new Color darkened (multiplied by factor).
+     * Returns a new Color darkened by decreasing lightness in HSL space.
      *
-     * @param factor - Multiplier applied to each RGB channel (e.g. 0.5 for half brightness).
+     * @param amount - How much to decrease lightness (0–1). 0 = no change, 1 = black.
      * @returns A new, darker Color.
-     * @example
-     * ```typescript
-     * const red = Color.red();
-     * const darkRed = red.darken(0.5);
-     * ```
-     */
-    darken(factor: number): Color;
-    /**
-     * Returns a new Color lightened.
      *
-     * @param factor - The lightening amount; internally applies `darken(1 + factor)`.
-     * @returns A new, lighter Color.
      * @example
      * ```typescript
      * const red = Color.red();
-     * const lighterRed = red.lighten(0.2);
+     * const darkRed = red.darken(0.3);
+     * console.log(darkRed.hex); // "#660000"
      * ```
      */
-    lighten(factor: number): Color;
+    darken(amount: number): Color;
+    /**
+     * Returns a new Color lightened by increasing lightness in HSL space.
+     *
+     * @param amount - How much to increase lightness (0–1). 0 = no change, 1 = white.
+     * @returns A new, lighter Color.
+     *
+     * @example
+     * ```typescript
+     * const red = Color.red();
+     * const pink = red.lighten(0.3);
+     * console.log(pink.hex); // "#FF9999" (light red/pink)
+     * ```
+     */
+    lighten(amount: number): Color;
     /**
      * Creates a Color from a hexadecimal string.
      * Supports formats: `#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`.
@@ -174,6 +210,63 @@ export declare class Color {
      * ```
      */
     static fromHex(hex: string): Color;
+    /**
+     * Creates a Color from HSL (Hue, Saturation, Lightness) values.
+     *
+     * This method uses the standard HSL color model, where:
+     * - Hue is expressed as an angle in degrees (0–360), representing the color's
+     *   position on the color wheel (red at 0°, green at 120°, blue at 240°).
+     * - Saturation is a normalized value (0–1), where 0 is grayscale and 1 is full
+     *   color intensity.
+     * - Lightness is a normalized value (0–1), where 0 is black and 1 is white.
+     *
+     * Input values are strictly validated, and the resulting RGB components
+     * are returned as numbers in the range 0–1, matching the Color constructor.
+     *
+     * @param h - The hue angle in degrees (0–360).
+     * @param s - The saturation level (0–1).
+     * @param l - The lightness level (0–1).
+     * @returns A new Color instance representing the specified HSL color.
+     * @throws {Error} If any parameter is not a finite number.
+     * @throws {Error} If hue is outside the range 0–360.
+     * @throws {Error} If saturation or lightness is outside the range 0–1.
+     *
+     * @example
+     * ```typescript
+     * // Pure red
+     * const red = Color.fromHsl(0, 1, 0.5);
+     * console.log(red.r, red.g, red.b); // 1, 0, 0
+     * ```
+     *
+     * @example
+     * ```typescript
+     * // Pure green
+     * const green = Color.fromHsl(120, 1, 0.5);
+     * console.log(green.r, green.g, green.b); // 0, 1, 0
+     * ```
+     *
+     * @example
+     * ```typescript
+     * // Pure blue
+     * const blue = Color.fromHsl(240, 1, 0.5);
+     * console.log(blue.r, blue.g, blue.b); // 0, 0, 1
+     * ```
+     *
+     * @example
+     * ```typescript
+     * // 50% gray (achromatic)
+     * const gray = Color.fromHsl(0, 0, 0.5);
+     * console.log(gray.r, gray.g, gray.b); // 0.5, 0.5, 0.5
+     * ```
+     *
+     * @example
+     * ```typescript
+     * // White and black
+     * console.log(Color.fromHsl(0, 0, 1)); // (1, 1, 1)
+     * console.log(Color.fromHsl(0, 0, 0)); // (0, 0, 0)
+     * ```
+     */
+    static fromHsl(h: number, s: number, l: number): Color;
     /**
      * Creates a Color from integer RGB (0-255) channels.
      *
