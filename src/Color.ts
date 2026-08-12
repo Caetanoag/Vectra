@@ -260,32 +260,40 @@ export class Color {
   }
 
   /**
-   * Returns a new Color darkened (multiplied by factor).
+   * Returns a new Color darkened by decreasing lightness in HSL space.
    *
-   * @param factor - Multiplier applied to each RGB channel (e.g. 0.5 for half brightness).
+   * @param amount - How much to decrease lightness (0–1). 0 = no change, 1 = black.
    * @returns A new, darker Color.
+   *
    * @example
    * ```typescript
    * const red = Color.red();
-   * const darkRed = red.darken(0.5);
+   * const darkRed = red.darken(0.3);
+   * console.log(darkRed.hex); // "#660000"
    * ```
    */
-  public darken(factor: number): Color {
-    return new Color(this.r * factor, this.g * factor, this.b * factor, this.a);
+  public darken(amount: number): Color {
+    const { hue, saturation, lightness } = this.hsl;
+    const newLightness = Math.max(0, lightness - amount);
+    return Color.fromHsl(hue, saturation, newLightness);
   }
   /**
-   * Returns a new Color lightened.
+   * Returns a new Color lightened by increasing lightness in HSL space.
    *
-   * @param factor - The lightening amount; internally applies `darken(1 + factor)`.
+   * @param amount - How much to increase lightness (0–1). 0 = no change, 1 = white.
    * @returns A new, lighter Color.
+   *
    * @example
    * ```typescript
    * const red = Color.red();
-   * const lighterRed = red.lighten(0.2);
+   * const pink = red.lighten(0.3);
+   * console.log(pink.hex); // "#FF9999" (light red/pink)
    * ```
    */
-  public lighten(factor: number): Color {
-    return this.darken(Math.min(1, 1 + factor));
+  public lighten(amount: number): Color {
+    const { hue, saturation, lightness } = this.hsl;
+    const newLightness = Math.min(1, lightness + amount);
+    return Color.fromHsl(hue, saturation, newLightness);
   }
   /**
    * Creates a Color from a hexadecimal string.
