@@ -19,7 +19,7 @@ function getResponsiveFontSize(baseSize) {
 }
 
 const origin = new Vector2(renderer.width / 2, renderer.height / 2);
-const secondVector = new Vector2(10, 10).withLength(9);
+let secondVector = new Vector2(10, 10).withLength(9);
 let firstVector = new Vector2(-10, 0).withLength(9);
 function drawVector(v, drawInfo, color) {
   const tip = new Vector2(
@@ -52,10 +52,10 @@ function loop() {
 
   drawVector(firstVector, origin, Color.red());
   drawVector(secondVector, tipOfFirstVector, Color.green());
-  drawVector(resultVector, origin, Color.blue().lighten(0.9));
+  drawVector(resultVector, origin, Color.blue().lighten(0.2));
 
   firstVector = firstVector.rotate(Math.PI / 120);
-
+  secondVector = secondVector.rotate(-Math.PI / 60)
   const marginX = renderer.width * 0.03;
   const marginY = renderer.height * 0.05;
 
