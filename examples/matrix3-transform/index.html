@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Matrix3 Transform · CanvasRenderer Demo</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+            integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/automad-prism-themes@0.3.7/dist/prism-atom-one-dark.css"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <link rel="stylesheet" href="../../css/style.css" />
+        <link rel="stylesheet" href="../../css/nav.css" />
+        <script src="/Vectra/js/nav.js" defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Matrix3 Transform</h1>
+            </header>
+
+            <div class="demo-wrapper">
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <div class="controls">
+                <h3>Transformation</h3>
+                <div class="controls-grid">
+                    <label class="control">
+                        <span class="control-name">Translate X</span>
+                        <input type="range" id="slider-tx" />
+                        <output id="slider-tx-value" class="control-value"></output>
+                    </label>
+                    <label class="control">
+                        <span class="control-name">Translate Y</span>
+                        <input type="range" id="slider-ty" />
+                        <output id="slider-ty-value" class="control-value"></output>
+                    </label>
+                    <label class="control">
+                        <span class="control-name">Rotation</span>
+                        <input type="range" id="slider-angle" />
+                        <output id="slider-angle-value" class="control-value"></output>
+                    </label>
+                    <label class="control">
+                        <span class="control-name">Scale X</span>
+                        <input type="range" id="slider-sx" />
+                        <output id="slider-sx-value" class="control-value"></output>
+                    </label>
+                    <label class="control">
+                        <span class="control-name">Scale Y</span>
+                        <input type="range" id="slider-sy" />
+                        <output id="slider-sy-value" class="control-value"></output>
+                    </label>
+                </div>
+
+                <div class="matrix-panel">
+                    <h3>Matrix</h3>
+                    <div class="matrix-row">
+                        <table class="matrix-table">
+                            <tbody>
+                                <tr>
+                                    <td id="matrix-m00"></td>
+                                    <td id="matrix-m01"></td>
+                                    <td id="matrix-m02"></td>
+                                </tr>
+                                <tr>
+                                    <td id="matrix-m10"></td>
+                                    <td id="matrix-m11"></td>
+                                    <td id="matrix-m12"></td>
+                                </tr>
+                                <tr>
+                                    <td id="matrix-m20"></td>
+                                    <td id="matrix-m21"></td>
+                                    <td id="matrix-m22"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button
+                            type="button"
+                            id="inverse-toggle"
+                            class="inverse-button"
+                            aria-pressed="false"
+                        >
+                            Show inverse: OFF
+                        </button>
+                        <button
+                            type="button"
+                            id="reset-button"
+                            class="inverse-button"
+                        >
+                            Reset Transform
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>What you see</h3>
+                    <p>
+                        The gray outline is the original arrow at the canvas
+                        center. Drag the sliders in the Transformation panel
+                        below to build a <code>Matrix3</code> — the
+                        <span class="badge badge-blue">cyan</span>
+                        arrow is the same shape transformed by it, the
+                        <span class="badge badge-red">red</span> and
+                        <span class="badge badge-green">green</span> segments are
+                        the transformed basis vectors, and the
+                        <span class="badge badge-blue">yellow</span> dot marks the
+                        matrix origin. Press <code>I</code> to draw the inverse
+                        (orange) and <code>R</code> to reset.
+                    </p>
+                </div>
+                <div class="info-card">
+                    <h3>API features used</h3>
+                    <p>
+                        <code>Matrix3</code> · <code>CanvasRenderer</code> ·
+                        <code>InputManager</code> · <code>Vector2</code> ·
+                        <code>Color</code>
+                    </p>
+                    <p style="margin-top: 0.5rem">
+                        Compose <code>translation</code>, <code>rotation</code> and
+                        <code>scaling</code> with <code>multiply</code>, then apply
+                        them with <code>applyToVector</code>,
+                        <code>applyToDirection</code> or
+                        <code>renderer.applyMatrix</code>. Undo with
+                        <code>invert</code>, inspect with <code>toArray</code> and
+                        <code>equals</code>. Every operation is
+                        <strong>immutable</strong>.
+                    </p>
+                </div>
+            </div>
+            <div class="code-section">
+                <h3>Source code</h3>
+                <pre><code class="language-javascript" id="source-code">
+                </code></pre>
+            </div>
+
+            <div class="footer">
+                <p>
+                    Built using the <strong>Vectra</strong> graphical library
+                    <a href="#">Documentation</a> &middot;
+                    <a href="https://github.com/caetanoag/Vectra">GitHub</a>
+                </p>
+            </div>
+        </div>
+        <script>
+            async function getScript() {
+                try {
+                    const response = await fetch("./main.js");
+                    const code = await response.text();
+                    const codeElement = document.getElementById("source-code");
+                    codeElement.textContent = code;
+                    if (typeof Prism !== "undefined") {
+                        Prism.highlightElement(codeElement);
+                    } else {
+                        console.warn("Error loading Prism Highlighter");
+                    }
+                } catch (err) {
+                    console.error("Error loading source code", err);
+                    document.getElementById("source-code").textContent =
+                        `Error loading source code\n ${err.message}`;
+                }
+            };
+            getScript();
+        </script>
+
+        <script type="module" src="main.js"></script>
+    </body>
+</html>

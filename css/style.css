@@ -111,6 +111,98 @@ canvas {
     font-size: 0.95rem;
 }
 
+.controls {
+    background: #151e2f;
+    border: 1px solid #2a3650;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.controls h3 {
+    color: #b8c9f0;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+.control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.control-name {
+    color: #a0aec0;
+    font-size: 0.8rem;
+}
+
+.control input[type="range"] {
+    width: 100%;
+}
+
+.control-value {
+    color: #e0e4f0;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-size: 0.85rem;
+}
+
+.matrix-panel {
+    margin-top: 1.25rem;
+    border-top: 1px solid #2a3650;
+    padding-top: 1rem;
+}
+
+.matrix-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.matrix-table {
+    border-collapse: separate;
+    border-spacing: 0.3rem;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.matrix-table td {
+    min-width: 3.5rem;
+    padding: 0.25rem 0.75rem;
+    background: #1e2a3f;
+    border: 1px solid #2a3650;
+    color: #e0e4f0;
+    font-size: 0.85rem;
+    text-align: right;
+}
+
+.inverse-button {
+    background: #1e2a3f;
+    border: 1px solid #2a3650;
+    border-radius: 0.5rem;
+    color: #e0e4f0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+}
+
+.inverse-button:hover {
+    border-color: #ffb86b;
+}
+
+.inverse-button.active {
+    background: #ffb86b;
+    border-color: #ffb86b;
+    color: #1a1306;
+}
+
 .badge {
     display: inline-block;
     background: #2d3b5a;
@@ -252,6 +344,13 @@ canvas {
         grid-template-columns: 1fr;
         gap: 1rem;
         margin: 1.5rem 0;
+    }
+    .controls {
+        padding: 1rem;
+    }
+    .controls-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
     }
     .info-card {
         padding: 1rem;

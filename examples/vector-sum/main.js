@@ -1,22 +1,13 @@
-import { CanvasRenderer, Color, Vector2 } from "/Vectra/lib/index.js";
+import { Color, Vector2 } from "/Vectra/lib/index.js";
 import { drawGrid } from "../shared/backgrounds.js";
+import { createRenderer, getResponsiveFontSize } from "../shared/renderer.js";
 
 const canvas = document.getElementById("canvas");
 
-const wrapper = canvas.parentElement;
-const rect = wrapper.getBoundingClientRect();
-const width = rect.width || 800;
-const height = width * (9 / 16);
-
-const renderer = new CanvasRenderer(canvas);
-renderer.setSize(width, height);
+const renderer = createRenderer(canvas);
 
 const PIXEL_SIZE = 2;
 const PIXEL_PER_METER = renderer.height * 0.03;
-function getResponsiveFontSize(baseSize) {
-  const scale = Math.min(1, renderer.width / 800);
-  return Math.max(baseSize * scale, 12);
-}
 
 const origin = new Vector2(renderer.width / 2, renderer.height / 2);
 let secondVector = new Vector2(10, 10).withLength(9);
@@ -59,8 +50,8 @@ function loop() {
   const marginX = renderer.width * 0.03;
   const marginY = renderer.height * 0.05;
 
-  const fontSizeInfo = getResponsiveFontSize(30);
-  const fontSizeResult = getResponsiveFontSize(25);
+  const fontSizeInfo = getResponsiveFontSize(renderer, 30);
+  const fontSizeResult = getResponsiveFontSize(renderer, 25);
 
   const angleText = `Angle: ${Math.round((firstVector.angle * 180) / Math.PI)}`;
   renderer.fillText(

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Rect Operations · CanvasRenderer Demo</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+            integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/automad-prism-themes@0.3.7/dist/prism-atom-one-dark.css"
+        />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <link rel="stylesheet" href="../../css/style.css" />
+        <link rel="stylesheet" href="../../css/nav.css" />
+        <script src="/Vectra/js/nav.js" defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Rect Operations</h1>
+            </header>
+
+            <div class="demo-wrapper">
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>What you see</h3>
+                    <p>
+                        Two axis‑aligned rectangles —
+                        <span class="badge badge-red">red</span> and
+                        <span class="badge badge-green">green</span> — bounce
+                        inside a bounded area. Their overlapping region is
+                        highlighted in <span class="badge badge-blue">yellow</span>,
+                        while the <span class="badge badge-blue">blue</span>
+                        outline is the bounding box that contains both.
+                        Move your mouse over the canvas to test point
+                        containment with <code>Rect.contains</code>.
+                    </p>
+                </div>
+                <div class="info-card">
+                    <h3>API features used</h3>
+                    <p>
+                        <code>Rect</code> · <code>CanvasRenderer</code> ·
+                        <code>InputManager</code> · <code>Vector2</code> ·
+                        <code>Color</code>
+                    </p>
+                    <p style="margin-top: 0.5rem">
+                        Explore <code>intersection</code>, <code>union</code>,
+                        <code>intersects</code>, <code>contains</code>,
+                        <code>center</code>, <code>area</code> and the mutable
+                        <code>translate</code>/<code>moveTo</code> chain.
+                    </p>
+                </div>
+            </div>
+            <div class="code-section">
+                <h3>Source code</h3>
+                <pre><code class="language-javascript" id="source-code">
+                </code></pre>
+            </div>
+
+            <div class="footer">
+                <p>
+                    Built using the <strong>Vectra</strong> graphical library
+                    <a href="#">Documentation</a> &middot;
+                    <a href="https://github.com/caetanoag/Vectra">GitHub</a>
+                </p>
+            </div>
+        </div>
+        <script>
+            async function getScript() {
+                try {
+                    const response = await fetch("./main.js");
+                    const code = await response.text();
+                    const codeElement = document.getElementById("source-code");
+                    codeElement.textContent = code;
+                    if (typeof Prism !== "undefined") {
+                        Prism.highlightElement(codeElement);
+                    } else {
+                        console.warn("Error loading Prism Highlighter");
+                    }
+                } catch (err) {
+                    console.error("Error loading source code", err);
+                    document.getElementById("source-code").textContent =
+                        `Error loading source code\n ${err.message}`;
+                }
+            };
+            getScript();
+        </script>
+
+        <script type="module" src="main.js"></script>
+    </body>
+</html>
