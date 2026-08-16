@@ -613,8 +613,8 @@ export class Rect {
    */
   public clampPoint(point: Vector2): Vector2 {
     return point.clamp(
-      new Vector2(this.left, this.top), // ✅ min = (esquerda, topo)
-      new Vector2(this.right, this.bottom), // ✅ max = (direita, base)
+      new Vector2(this.left, this.top),
+      new Vector2(this.right, this.bottom),
     );
   }
 
