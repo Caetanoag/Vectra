@@ -92,7 +92,6 @@ export class InputManager {
         this.mouseInfo.MouseOver = false;
       });
 
-      // Dentro do construtor, após a configuração do mouse:
       this.target.addEventListener(
         "touchstart",
         (e: TouchEvent) => {
