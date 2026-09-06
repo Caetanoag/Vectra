@@ -1,4 +1,4 @@
-# Vectra – The HtmlCanvas Framework
+# Vectra – The HTML Canvas Framework
 
 Vectra is a lightweight 2D rendering and linear algebra library for the browser, built on top of the HTML Canvas API. It provides geometric primitives (`Vector2`, `Rect`, `Circle`), affine transformations (`Matrix3`, `Transform`), color manipulation (`Color`), user input handling (`InputManager`), and a renderer (`CanvasRenderer`) that abstracts the native Canvas context, allowing you to draw shapes, apply transformations, and manage scenes in a structured way.
 
@@ -68,7 +68,7 @@ find ./Vectra/ -mindepth 1 -path "./Vectra/lib" -prune -o -exec rm -rf {} +
 
 Now import from `./Vectra/lib/index.js` (or copy the `lib/` folder into your project).
 
-> **Developers:** if you want to build from `src/`, run `yarn install && yarn build` — that generates the `lib/` folders with JavaScript files and TypeScript declarations.
+> **Developers:** the steps above apply to consumers only — do not delete `src/` or `package.json`. From the repository root, run `yarn install && yarn build` to regenerate the `lib/` folder (JavaScript files and TypeScript declarations).
 
 ---
 
@@ -305,17 +305,5 @@ Text options (`TextOptions`):
 | `textAlign`    | `'start'`      | Text alignment (`CanvasTextAlign`)              |
 | `textBaseline` | `'alphabetic'` | Text baseline (`CanvasTextBaseline`)            |
 | `maxWidth`     | —              | Maximum rendering width                         |
-
----
-
-## Running Examples
-
-The examples live in `docs/examples/` and need no build step — each page loads its own `main.js` directly. To browse them, serve the repository root with a local server:
-
-```bash
-yarn dev
-```
-
-which serves the current directory with python3 (if installed). Then open [http://localhost:3000/docs/examples/](http://localhost:3000/docs/examples/) in a browser. The examples hub is also linked from the navigation sidebar of the documentation.
 
 ---
