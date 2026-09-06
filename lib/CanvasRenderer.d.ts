@@ -1,3 +1,4 @@
+import { Circle } from "./Circle.js";
 import type { Color } from "./Color.js";
 import type { Matrix3 } from "./Matrix3.js";
 import { Rect } from "./Rect.js";
@@ -131,31 +132,54 @@ export declare class CanvasRenderer {
      */
     strokeRect(rect: Rect, color: Color, lineWidth?: number): void;
     /**
-     * Fills a circle with a solid color.
+     * Fills a circle with a solid color, accepting a `Circle` or a center plus radius.
+     *
+     * @param circle - The circle to fill.
+     * @param color - The fill color.
+     * @throws If the radius is not a finite, non-negative number.
+     * @example
+     * ```typescript
+     * renderer.fillCircle(new Circle(new Vector2(150, 150), 40), Color.green());
+     * ```
+     *
+     * Overload: fill by center point and radius.
      *
      * @param center - The center point of the circle.
-     * @param radius - The circle's radius. Must be a positive, finite number.
+     * @param radius - The circle's radius. Must be a finite, non-negative number.
      * @param color - The fill color.
-     * @throws If `radius` is not a positive finite number.
+     * @throws If `radius` is not a finite, non-negative number.
      * @example
      * ```typescript
      * renderer.fillCircle(new Vector2(150, 150), 40, Color.green());
      * ```
      */
+    fillCircle(circle: Circle, color: Color): void;
     fillCircle(center: Vector2, radius: number, color: Color): void;
     /**
-     * Draws the outline of a circle.
+     * Draws the outline of a circle, accepting a `Circle` or a center plus radius.
      *
-     * @param center - The center point of the circle.
-     * @param radius - The circle's radius. Must be a positive, finite number.
+     * @param circle - The circle to outline.
      * @param color - The stroke color.
      * @param lineWidth - The line width in pixels (default: `2`).
-     * @throws If `radius` is not a positive finite number.
+     * @throws If the radius is not a finite, non-negative number.
+     * @example
+     * ```typescript
+     * renderer.strokeCircle(new Circle(new Vector2(150, 150), 40), Color.black());
+     * ```
+     *
+     * Overload: stroke by center point and radius.
+     *
+     * @param center - The center point of the circle.
+     * @param radius - The circle's radius. Must be a finite, non-negative number.
+     * @param color - The stroke color.
+     * @param lineWidth - The line width in pixels (default: `2`).
+     * @throws If `radius` is not a finite, non-negative number.
      * @example
      * ```typescript
      * renderer.strokeCircle(new Vector2(150, 150), 40, Color.black());
      * ```
      */
+    strokeCircle(circle: Circle, color: Color, lineWidth?: number): void;
     strokeCircle(center: Vector2, radius: number, color: Color, lineWidth?: number): void;
     /**
      * Fills a polygon defined by a list of vertices.
