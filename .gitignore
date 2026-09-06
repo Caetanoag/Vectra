@@ -4,3 +4,5 @@ dist/
 tsconfig.dev.json
 docs/
 specs/
+tests/
+vitest.config.ts
