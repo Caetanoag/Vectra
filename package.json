@@ -16,7 +16,7 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"clean": "rm -rf dist/* && rm -rf lib/*",
+		"clean": "rm -rf lib",
 		"commit": "tsc -p tsconfig.dev.json",
 		"dev": "python3 -m http.server 3000",
 		"test": "vitest run",
