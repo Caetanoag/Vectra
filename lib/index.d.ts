@@ -1,4 +1,5 @@
 export { CanvasRenderer } from "./CanvasRenderer.js";
+export { Circle } from "./Circle.js";
 export { Color } from "./Color.js";
 export { InputManager } from "./InputManager.js";
 export { Matrix3 } from "./Matrix3.js";

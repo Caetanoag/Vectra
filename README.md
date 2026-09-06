@@ -1,6 +1,6 @@
 # Vectra – The HtmlCanvas Framework
 
-Vectra is a lightweight 2D rendering and linear algebra library for the browser, built on top of the HTML Canvas API. It provides geometric primitives (`Vector2`, `Rect`), affine transformations (`Matrix3`, `Transform`), color manipulation (`Color`), user input handling (`InputManager`), and a renderer (`CanvasRenderer`) that abstracts the native Canvas context, allowing you to draw shapes, apply transformations, and manage scenes in a structured way.
+Vectra is a lightweight 2D rendering and linear algebra library for the browser, built on top of the HTML Canvas API. It provides geometric primitives (`Vector2`, `Rect`, `Circle`), affine transformations (`Matrix3`, `Transform`), color manipulation (`Color`), user input handling (`InputManager`), and a renderer (`CanvasRenderer`) that abstracts the native Canvas context, allowing you to draw shapes, apply transformations, and manage scenes in a structured way.
 
 ---
 
@@ -12,6 +12,7 @@ Vectra is a lightweight 2D rendering and linear algebra library for the browser,
 import {
   Vector2,
   Rect,
+  Circle,
   Color,
   Matrix3,
   Transform,
@@ -28,6 +29,7 @@ If you clone the repository, you can import from the `lib/` folder — you only 
 import {
   Vector2,
   Rect,
+  Circle,
   Color,
   Matrix3,
   Transform,
@@ -66,7 +68,7 @@ find ./Vectra/ -mindepth 1 -path "./Vectra/lib" -prune -o -exec rm -rf {} +
 
 Now import from `./Vectra/lib/index.js` (or copy the `lib/` folder into your project).
 
-> **Developers:** if you want to build from `src/`, run `yarn install && yarn build` — that generates the `lib/` and `dist/` folders with JavaScript files and TypeScript declarations.
+> **Developers:** if you want to build from `src/`, run `yarn install && yarn build` — that generates the `lib/` folders with JavaScript files and TypeScript declarations.
 
 ---
 
@@ -75,6 +77,7 @@ Now import from `./Vectra/lib/index.js` (or copy the `lib/` folder into your pro
 ```javascript
 import {
   CanvasRenderer,
+  Circle,
   Color,
   Rect,
   Vector2,
@@ -94,8 +97,8 @@ renderer.fillRect(rect, Color.fromRgb(52, 152, 219));
 renderer.strokeRect(rect, Color.white(), 2);
 
 // Circle
-const center = new Vector2(400, 200);
-renderer.fillCircle(center, 80, Color.fromRgb(231, 76, 60));
+const circle = new Circle(new Vector2(400, 200), 80);
+renderer.fillCircle(circle, Color.fromRgb(231, 76, 60));
 ```
 
 ---
@@ -107,44 +110,86 @@ renderer.fillCircle(center, 80, Color.fromRgb(231, 76, 60));
 Immutable 2D vector — all operations return new instances.
 
 - `new Vector2(x, y)` — `x` and `y` must be finite
-- `add(v): Vector2`
-- `subtract(v): Vector2`
-- `(factor): Vector2`
+- `static zero` / `static one` / `static right` / `static up` — `Vector2` constants
+- `add(v): Vector2` / `subtract(v): Vector2`
+- `translate(dx, dy): Vector2` – adds a displacement
+- `scale(factor): Vector2` – multiplies by a scalar
 - `negate(): Vector2`
+- `truncate(): Vector2`
+- `clamp(min, max): Vector2` – clamps components to a box
+- `clampLength(min, max): Vector2` – clamps the magnitude (direction preserved)
 - `hadamar(v): Vector2` – component-wise (Hadamard) product
-- `dot(v): number`
+- `dot(v): number` / `cross(v): number`
+- `lerp(v, t): Vector2` – linear interpolation, `t` in `[0, 1]`
+- `rotate(angle): Vector2` – counter-clockwise rotation (radians)
 - `distanceTo(v): number`
-- `length: number` (getter)
-- `lengthSq: number` (getter) – faster than `length` for comparisons
+- `length: number` (getter) / `lengthSq: number` (getter) – squared length for fast comparisons
+- `angle: number` (getter) – direction in radians
+- `getAngle(v): number` – angle from this vector to another
+- `angleTo(v): number` – signed angle in `[-π, π]`
 - `normalized(): Vector2`
-- `getAngle(v): number` – angle in radians to another vector
+- `withLength(newLength): Vector2`
+- `withX(newX): Vector2` / `withY(newY): Vector2`
+- `equals(v, epsilon?): boolean` – tolerance-based comparison
+- `clone(): Vector2`
 - `toString(): string`
-- `static fromAngle(radians): Vector2`
+- `static fromAngle(radians): Vector2` – unit vector from an angle
+- `static fromPolar(angle, length?): Vector2` – from polar coordinates
 
 ### Rect
 
 Axis-aligned rectangle (AABB). Most methods mutate the instance and return `this` for chaining.
 
 - `new Rect(x, y, width, height)` — validates and normalizes (negative width/height are corrected automatically)
-- `setWidth(w): this`
-- `setHeight(h): this`
-- `moveTo(x, y): this`
-- `setPosition(v): this`
-- `setSize(v): this`
-- `translate(dx, dy): this`
-- `resize(dx, dy): this` – adds to width/height
+- `setWidth(w): this` / `setHeight(h): this`
+- `moveTo(x, y): this` / `setPosition(v): this` / `setSize(v): this`
+- `translate(dx, dy): this` / `resize(dx, dy): this`
 - `inflate(dx, dy): this` – expands in all directions while keeping the center fixed
+- `scale(sx, sy): this` – scales from the top-left corner
+- `scaleFromCenter(sx, sy): this` – scales keeping the center fixed
+- `round(): this`
 - `contains(point: Vector2): boolean`
-- `intersects(other: Rect): boolean`
-- `union(other: Rect): Rect`
-- `intersection(other: Rect): Rect | undefined`
-- `clone(): Rect`
+- `containsBox(box: Rect): boolean`
+- `intersects(box: Rect): boolean`
+- `union(box: Rect): Rect` / `intersection(box: Rect): Rect | undefined`
+- `clampPoint(point: Vector2): Vector2` – clamps a point into the rectangle
+- `distanceToPoint(point: Vector2): number` / `distanceSquaredToPoint(point: Vector2): number`
 - `isEmpty(): boolean`
-- `equals(other: Rect): boolean`
+- `equals(box: Rect): boolean`
+- `clone(): Rect`
 - `getWidth(): number` / `getHeight(): number`
 - `left, right, top, bottom` – getters (numbers)
-- `position, center` – getters (`Vector2`)
+- `position, center, size` – getters (`Vector2`)
 - `area` – getter (number)
+- `aspectRatio` – getter (number)
+- `static fromCenter(center, size): Rect` / `static fromCorners(a, b): Rect`
+- `static generateRandomInside(boundary, minWidth?, minHeight?): Rect`
+
+### Circle
+
+Circle defined by a center point and a finite, non-negative radius. `center` and `radius` are public; mutators return `this` for chaining.
+
+- `new Circle(center: Vector2, radius)` — `radius` must be finite and `≥ 0`
+- `setRadius(r): this` / `setCenter(v): this`
+- `translate(dx, dy): this` / `scale(factor): this`
+- `area` – getter (`πr²`)
+- `circumference` – getter (`2πr`)
+- `diameter` – getter (`2r`)
+- `radiusSquared` – getter (`r²`)
+- `boundingBox: Rect` – getter, axis-aligned box that encloses the circle
+- `string: string` – getter, equivalent to `toString()`
+- `equationString: string` – getter, Cartesian equation `(x − h)² + (y − k)² = r²`
+- `containsPoint(point: Vector2, epsilon?): boolean` – inside or on the boundary
+- `isPointOnCircumference(point: Vector2, epsilon?): boolean`
+- `distanceTo(v: Vector2 | Circle): number` – distance between centers
+- `pointAt(angle): Vector2` – point on the circumference at an angle (radians)
+- `intersects(other: Circle, epsilon?): boolean` – overlap or touch
+- `containsCircle(other: Circle, epsilon?): boolean`
+- `containsBox(box: Rect, epsilon?): boolean`
+- `equals(other: Circle, epsilon?): boolean`
+- `clone(): Circle`
+- `withCenter(v): Circle` / `withRadius(r): Circle` – immutable variants
+- `toString(): string`
 
 ### Color
 
@@ -153,12 +198,16 @@ Immutable color with channels normalized to `[0, 1]`.
 - `new Color(r, g, b, a?)`
 - `static fromHex(hex: string): Color` – supports `#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`
 - `static fromRgb(r, g, b, a?): Color` – channels in `0-255`
+- `static fromHsl(h, s, l): Color` – hue in degrees, saturation/lightness in `0-1`
 - `hex: string` – `#RRGGBB` or `#RRGGBBAA`
 - `rgb: string` – CSS `rgb(...)`
 - `rgba: string` – CSS `rgba(...)`
 - `toArray: [number, number, number, number | undefined]`
 - `brightness: number` – approximate luminance
+- `hsl: { hue, saturation, lightness }` – HSL representation
 - `lerp(other, t): Color`
+- `withAlpha(alpha): Color`
+- `darken(amount): Color` / `lighten(amount): Color` – in HSL space
 - `clone(): Color`
 - `equals(other, epsilon?): boolean`
 - `static white() / black() / red() / green() / blue() / transparent(): Color`
@@ -192,6 +241,7 @@ Represents 2D position, rotation, and scale, with support for hierarchies via `p
 - `translate(dx, dy): this`
 - `rotate(angle): this` – adds to the current rotation
 - `scaleBy(sx, sy): this` – multiplies the current scale
+- `lookAt(target): this` – rotates to face a point
 - `getMatrix(): Matrix3` – local matrix (order: scale → rotation → translation)
 - `parent: Transform | null` (getter) / `setParent(parent): void`
 - `getWorldMatrix(): Matrix3` – combines with the parent chain
@@ -214,6 +264,7 @@ Wraps the HTML Canvas 2D context, providing a higher-level API for shapes, trans
 
 - `new CanvasRenderer(canvas: HTMLCanvasElement)`
 - `width, height` – getters
+- `boundingRect: Rect` – getter for `Rect(0, 0, width, height)`
 - `context: CanvasRenderingContext2D` – getter for the raw context (use cautiously)
 - `setSize(width, height): void`
 - `clear(rect?): void` – clears the whole canvas, or only the given region
@@ -222,8 +273,8 @@ Wraps the HTML Canvas 2D context, providing a higher-level API for shapes, trans
 
 - `fillRect(rect, color): void`
 - `strokeRect(rect, color, lineWidth?): void`
-- `fillCircle(center, radius, color): void`
-- `strokeCircle(center, radius, color, lineWidth?): void`
+- `fillCircle(circle: Circle, color): void` – or `fillCircle(center: Vector2, radius, color)`
+- `strokeCircle(circle: Circle, color, lineWidth?): void` – or `strokeCircle(center: Vector2, radius, color, lineWidth?)`
 - `fillPolygon(points, color): void`
 - `strokePolygon(points, color, lineWidth?): void`
 - `drawLine(from, to, color, lineWidth?): void`
